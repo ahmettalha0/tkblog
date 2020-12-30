@@ -10,5 +10,9 @@ def index():
 def about():
    return render_template("about.html")
 
+@app.route('/article/<string:slug>')
+def detail_page(slug):
+    return "Article " + slug
+
 if __name__ == '__main__':
     app.run(debug = True)
