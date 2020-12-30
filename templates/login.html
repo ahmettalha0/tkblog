@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% from "includes/formhelpers.html" import render_field %}
+    <div class ="container">
+        <section class = "intro">
+            <h2>Login</h2>
+            <hr>
+            <div class="d-flex justify-content-center">
+                <form method = "POST">
+                    {{ render_field(form.username, class="form-control") }}
+                    {{ render_field(form.password, class="form-control") }}
+                    
+                    <button type="submit" class="btn btn-info">Login</button>
+                </form>
+            </div>
+        </section>
+        
+    </div>
+{% endblock body %}

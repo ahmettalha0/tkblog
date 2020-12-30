@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, PasswordField, validators
+from wtforms import Form, StringField, PasswordField, form, validators
 from passlib.handlers.sha2_crypt import sha256_crypt
 
 app = Flask(__name__)
@@ -26,6 +26,9 @@ class RegisterForm(Form):
         ])
     confirm = PasswordField("Re-enter your password", validators=[validators.DataRequired()])
 
+class LoginForm(Form):
+    username = StringField("Username",validators=[validators.DataRequired()])
+    password = PasswordField("Password",validators=[validators.DataRequired()])
 # routes
 @app.route("/")
 def index():
@@ -53,10 +56,33 @@ def register():
         mysql.connection.commit()
         cursor.close()
         flash(message="You have successfully registered.", category= "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
     else:
         return render_template("register.html", form = form)
     
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = LoginForm(request.form)
+
+    if request.method == "POST" and form.validate():
+        username = form.username.data
+        password = form.password.data
+        cursor = mysql.connection.cursor()
+        user_query = "Select * From users where username = %s"
+        result = cursor.execute(user_query, (username,))
+        if result > 0:
+            data = cursor.fetchone()
+            user_password = data["password"]
+            if sha256_crypt.verify(password, user_password):
+                flash(message="Welcome :)", category="success")
+                return redirect(url_for("index"))
+            else:
+                flash("Password is wrong!", category="danger")
+                return redirect(url_for("login"))
+        else:
+            flash(message="Username is wrong!", category="danger")
+            return redirect(url_for("login"))
+    return render_template("login.html", form = form)
 
 if __name__ == '__main__':
     app.run(debug=True)
