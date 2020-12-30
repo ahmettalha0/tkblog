@@ -4,6 +4,7 @@ from wtforms import Form, StringField, PasswordField, validators
 from passlib.handlers.sha2_crypt import sha256_crypt
 
 app = Flask(__name__)
+app.secret_key = "tkblog"
 
 # mysql settings
 mysql = MySQL(app)
@@ -19,6 +20,7 @@ class RegisterForm(Form):
     username = StringField("Username", validators=[validators.Length(min= 3, max= 35), validators.DataRequired()])
     email = StringField("Email", validators=[validators.DataRequired(), validators.Email("Please enter a valid email address")])
     password = PasswordField("Password", validators=[
+        validators.Length(min= 8, max= 40),
         validators.DataRequired(),
         validators.EqualTo(fieldname="confirm",message="Password does not match")
         ])
@@ -50,6 +52,7 @@ def register():
         cursor.execute(user_query, (name, username, email, password))
         mysql.connection.commit()
         cursor.close()
+        flash(message="You have successfully registered.", category= "success")
         return redirect(url_for("index"))
     else:
         return render_template("register.html", form = form)
