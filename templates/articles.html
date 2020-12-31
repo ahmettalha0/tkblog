@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block body %}
+        <div class="container my-3">
+            <h2>Articles</h2>
+            <hr>
+            <div class="row">
+            {% if articles %}
+                {% for article in articles %}
+                <div class="post col-xl-6 mb-3">
+                <div class="post-thumbnail"><a href="/article/{{article.id}}"><img src="{{article.post_thumbnail}}" 
+                alt="..." class="img-responsive" width="100% " height="300"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">{{article.created_date.strftime('%d-%m-%Y')}}</div>
+                    
+                  </div><a href="/article/{{article.id}}">
+                    <h3 class="h4">{{article.title}}</h3></a>
+                  <p class="text-muted">{{article.content[:240] | striptags}}</p>
+                  <footer class="post-footer d-flex align-items-center"><a href="/article/{{article.id}}" 
+                  class="author d-flex align-items-center flex-wrap">
+                      <div><span>{{article.author}}</span></div></a>
+                    
+                  </footer>
+                </div>
+              </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-dark" role="alert">
+                    There is no article in here.
+                </div>
+            {% endif %}
+            </div>
+        </div>
+{% endblock body %}

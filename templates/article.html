@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+{{article.title}} | ahmettalha.net
+{% endblock page_title %}
+
+{% block body %}
+{% if article %}
+<div class="container">
+            <div class="post-single">
+              <div class="post-thumbnail"><img src="{{article.post_thumbnail}}" alt="..." class="img-responsive" width="100% " height="500"></div>
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                  
+                </div>
+                <h1>{{article.title}}</h1>
+                <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
+                    <div class="title"><span>{{article.author}}</span></div></a>
+                  <div class="d-flex align-items-center flex-wrap">       
+                    <div class="date ml-3"><i class="icon-clock"></i> {{article.created_date.strftime('%d-%m-%Y')}}</div>
+                  </div>
+                </div>
+                <hr>
+                <div class="post-body mt-3 mb-5">
+                  {{article.content | safe}}
+                </div>
+                
+              </div>
+            </div>
+          </div>
+{% else %}
+<div class = "alert alert-warning">This article is apparently not here :(</div>
+{% endif %}
+{% endblock body %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class ="container mb-4">
+        <div class="row justify-content-between d-flex bd-highlight my-3">
+            <div class="col-lg-6 col-md-12 col-sm-12 p-2 bd-highlight h3">Dashboard</div>
+            <div class="col-lg-6 col-md-12 col-sm-12 text-xl-right text-md-right  text-sm-left  p-2 bd-highlight">Hello, <strong>{{session.username}}</strong></div>
+        </div>
+        <hr>
+        <a href="/add-article"><button type="button" class="btn btn-outline-warning">Add Article</button></a>
+        <a href="#" class="btn btn-outline-secondary disabled" tabindex="-1" role="button" aria-disabled="true">Link</a>
+        <hr>
+        {% if articles %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col" style="width: 6%">#</th>
+                    <th scope="col" style="width: 78%">Title</th>
+                    <th scope="col" style="width: 8%">Edit</th>
+                    <th scope="col" style="width: 8%">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for article in articles %}
+                    <tr>
+                    <th scope="row">{{article.id}}</th>
+                        <td><a href="/article/{{article.id}}" class="text-decoration-none" style="color: black;">{{article.title}}</a></td>
+                        <td><a class="btn btn-warning" href="/edit/{{article.id}}" role="button"><i class="fas fa-pen-square"></i></a></td>
+                        <td><a class="btn btn-danger" href="/delete/{{article.id}}" role="button"><i class="far fa-trash-alt"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class = "aler alert-danger">You don't have an article written yet. How would you like to start writing right away?</div>
+        {% endif %}
+    </div>
+{% endblock body %}

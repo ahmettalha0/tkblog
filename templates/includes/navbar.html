@@ -33,8 +33,17 @@
               <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
               </li>
             </ul>
-            <div class = "ml-4"><a href="/login"><button type="button" class="btn btn-success ">Login</button></a></div>
-            <div class = "ml-1"><a href="/register"><button type="button" class="btn btn-warning ">Register</button></a></div>
+            {% if session["logged_in"] %}
+            <div class = "ml-1"><a href="/add-article"><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Add a new article"><i class="fas fa-plus"></i></button></a></div>
+            <div class = "ml-1"><a href="#"><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="All Articles"><i class="far fa-newspaper"></i></button></a></div>
+            <div class = "ml-1"><a href="/dashboard"><button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Manage settings"><i class="fas fa-cog"></i></button></a></div>
+            <div class = "ml-1"><a href="/logout"><button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Log out"><i class="fas fa-sign-out-alt"></i></button></a></div>
+            {% else %}
+            <div class = "ml-4"><a href="/login"><button type="button" class="btn btn-success">Login</button></a></div>
+            <div class = "ml-1"><a href="/register"><button type="button" class="btn btn-warning">Register</button></a></div>
+            {% endif %}
+            
+            
           </div>
         </div>
       </nav>

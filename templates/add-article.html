@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% from "includes/formhelpers.html" import render_field %}
+        <div class="container my-3">
+            <h2>Add a new article</h2>
+            <hr>
+                <form method = "POST">
+                    {{ render_field(form.title, class="form-control") }}
+                    {{ render_field(form.content, class="form-control") }}
+                    {{ render_field(form.thumbnail, class="form-control") }}
+                   
+                    <button type="submit" class="btn btn-warning">Add</button>
+                </form>
+        </div>
+{% endblock body %}
