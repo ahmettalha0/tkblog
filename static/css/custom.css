@@ -2,3 +2,7 @@
 .ck-editor__editable {
     min-height: 350px;
 }
+
+.img-responsive{
+    background-image: url(/static/img/default.png);
+}

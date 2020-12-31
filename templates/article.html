@@ -7,12 +7,10 @@
 {% block body %}
 {% if article %}
 <div class="container">
+
             <div class="post-single">
               <div class="post-thumbnail"><img src="{{article.post_thumbnail}}" alt="..." class="img-responsive" width="100% " height="500"></div>
               <div class="post-details">
-                <div class="post-meta d-flex justify-content-between">
-                  
-                </div>
                 <h1>{{article.title}}</h1>
                 <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#" class="author d-flex align-items-center flex-wrap">
                     <div class="title"><span>{{article.author}}</span></div></a>
