@@ -1,8 +1,10 @@
+from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, PasswordField, validators
+from wtforms import Form, StringField, PasswordField, validators, TextAreaField
 from passlib.handlers.sha2_crypt import sha256_crypt
 from functools import wraps
+from slugify import slugify
 
 from wtforms.fields.simple import TextAreaField
 
@@ -101,21 +103,22 @@ def add_article():
         title = form.title.data
         content = form.content.data
         thumbnail = form.thumbnail.data
-        
+        now = datetime.now()
+        slug = slugify(form.title.data + "-" + str(now.day) + str(now.month) + str(now.microsecond))
         cursor = mysql.connection.cursor()
-        add_query = "Insert into articles(title,author,content,post_thumbnail) VALUES(%s,%s,%s,%s)"
-        cursor.execute(add_query,(title,session["username"], content, thumbnail))
+        add_query = "Insert into articles(title,author,content,post_thumbnail,slug) VALUES(%s,%s,%s,%s, %s)"
+        cursor.execute(add_query,(title,session["username"], content, thumbnail, slug))
         mysql.connection.commit()
         cursor.close()
         flash(message="The article has been successfully added.", category="success")
         return redirect(url_for("dashboard"))
     return render_template("add-article.html", form = form)
      
-@app.route('/article/<string:id>')
-def article_detail(id):
+@app.route('/article/<slug>')
+def article_detail(slug):
     cursor = mysql.connection.cursor()
-    article_query = "Select * From articles where id = %s"
-    result = cursor.execute(article_query,(id,))
+    article_query = "Select * From articles where slug = %s"
+    result = cursor.execute(article_query,(slug,))
     if result > 0:
         article = cursor.fetchone()
         return render_template("article.html", article = article)
@@ -160,7 +163,7 @@ def article_update(id):
         if form.validate():
             updated_title = form.title.data
             updated_content = form.content.data
-            updated_thumbnail = form.thumbnail.data
+            updated_thumbnail = form.thumbnail.data            
             update_query = "Update articles Set title = %s, content = %s, post_thumbnail = %s where id = %s"
             cursor = mysql.connection.cursor()
             cursor.execute(update_query, (updated_title, updated_content, updated_thumbnail, id))

@@ -8,16 +8,16 @@
             {% if articles %}
                 {% for article in articles %}
                 <div class="post col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-                <div class="post-thumbnail"><a href="/article/{{article.id}}"><img src="{{article.post_thumbnail}}" 
+                <div class="post-thumbnail"><a href="/article/{{article.slug}}"><img src="{{article.post_thumbnail}}" 
                 alt="..." class="img-responsive" width="100% " height="300"></a></div>
                 <div class="post-details">
                   <div class="post-meta d-flex justify-content-between">
                     <div class="date meta-last">{{article.created_date.strftime('%d-%m-%Y')}}</div>
                     
-                  </div><a href="/article/{{article.id}}">
+                  </div><a href="/article/{{article.slug}}">
                     <h3 class="h4">{{article.title}}</h3></a>
                   <p class="text-muted">{{article.content[:240] | striptags}}</p>
-                  <footer class="post-footer d-flex align-items-center"><a href="/article/{{article.id}}" 
+                  <footer class="post-footer d-flex align-items-center"><a href="/article/{{article.slug}}" 
                   class="author d-flex align-items-center flex-wrap">
                       <div><span>{{article.author}}</span></div></a>
                     
