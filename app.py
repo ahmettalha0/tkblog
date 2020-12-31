@@ -225,5 +225,24 @@ def logout():
     flash(message="You logged out successfully, we wait again.", category="success")
     return redirect(url_for("index"))
 
+# search
+
+@app.route('/search', methods=["GET","POST"])
+def search():
+    if request.method == "GET":
+       return render_template("search.html")
+    else:
+        search_key = request.form.get("search-key")
+        cursor = mysql.connection.cursor()
+        search_query = "Select * From articles where title LIKE '%" + search_key + "%' or content LIKE '%" + search_key + "%' "
+        result = cursor.execute(search_query)
+        if result > 0:
+            articles = cursor.fetchall()
+            flash(message= "Showing results for " + search_key, category="success")
+            return render_template("articles.html", articles = articles)
+        else:
+            flash(message="There is no article related to the content you are looking for.", category="secondary")
+            return render_template("search.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
