@@ -11,16 +11,29 @@
       </div>
     </section>
     <!-- Intro Section-->
-    <section class="intro">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <h2 class="h3">Blog Mesajları İçin Üst Menüden Posts'a Tıklayınız</h2>
-            <p class="text-big">Yapabilirsem <strong>son birkaç tanesini</strong> bu sayfada <strong>göstermeye çabalayacağım</strong>.
-             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Ut enim ad minim veniam, quis nostrud nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderi.</p>
+    <div class="container my-5">
+    {% if articles %}
+      {% for article in articles %}
+        <div class="card mb-3">
+        <div class="row no-gutters">
+          <div class="col-md-2">
+          <a href="/article/{{article.id}}">
+            <img src="{{article.post_thumbnail}}" class="img-responsive p-3" width="200 " height="200" ></a>
+          </div>
+          <div class="col-md-10 pr-3">
+            <div class="card-body">
+              <h5 class="card-title"><a href="/article/{{article.id}}" class="text-decoration-none" style="color: black;">{{article.title}}</a></h5>
+              <p class="card-text"><a href="/article/{{article.id}}" class="text-decoration-none" style="color: black;">{{article.content[:300] | striptags}}</a></p>
+              <p class="card-text"><small class="text-muted"><i class="icon-clock"></i> {{article.created_date.strftime('%d-%m-%Y')}}</small></p>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+      {% endfor %}
+      <a href="/articles" type="button" class="btn btn-warning btn-lg btn-block"><strong>See All Articles</strong></a>
+
+    {% else %}
+    <div>deneme</div>
+    {% endif %}
+    </div> 
 {% endblock body %}

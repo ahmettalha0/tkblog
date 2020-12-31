@@ -24,18 +24,14 @@
          
           <div id="navbarcollapse" class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
-              <li class="nav-item"><a href="/about" class="nav-link ">About</a>
+              <li class="nav-item"><a href="/about" class="nav-link">About</a>
               </li>
-              <li class="nav-item"><a href="/articles" class="nav-link active ">Blog</a>
-              </li>
-              <li class="nav-item"><a href="post.html" class="nav-link ">Post</a>
-              </li>
-              <li class="nav-item"><a href="#" class="nav-link ">Contact</a>
+              <li class="nav-item"><a href="/articles" class="nav-link">Posts</a>
               </li>
             </ul>
             {% if session["logged_in"] %}
             <div class = "ml-1"><a href="/add-article"><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Add a new article"><i class="fas fa-plus"></i></button></a></div>
-            <div class = "ml-1"><a href="#"><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="All Articles"><i class="far fa-newspaper"></i></button></a></div>
+            <div class = "ml-1"><a href="/dashboard"><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="My Articles"><i class="far fa-newspaper"></i></button></a></div>
             <div class = "ml-1"><a href="/dashboard"><button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Manage settings"><i class="fas fa-cog"></i></button></a></div>
             <div class = "ml-1"><a href="/logout"><button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Log out"><i class="fas fa-sign-out-alt"></i></button></a></div>
             {% else %}

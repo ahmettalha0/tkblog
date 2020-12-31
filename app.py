@@ -42,7 +42,14 @@ class AddArticleForm(Form):
 # routes
 @app.route("/")
 def index():
-    return render_template("index.html")
+    cursor = mysql.connection.cursor()
+    article_query = "Select * From articles ORDER BY id DESC LIMIT 3"
+    result = cursor.execute(article_query)
+    if result > 0:
+        articles = cursor.fetchall()
+        return render_template("index.html", articles = articles)
+    else:
+        return render_template("index.html")
 
 @app.route('/about')
 def about():
@@ -63,7 +70,7 @@ def login_required(f):
 @login_required
 def dashboard():
     cursor = mysql.connection.cursor()
-    article_query = "Select * From articles where author = %s"
+    article_query = "Select * From articles where author = %s ORDER BY id DESC"
     result = cursor.execute(article_query,(session["username"],))
     if result > 0:
         articles = cursor.fetchall()
@@ -93,7 +100,7 @@ def add_article():
 @app.route('/articles')
 def articles():
     cursor = mysql.connection.cursor()
-    article_query = "Select * From articles"
+    article_query = "Select * From articles ORDER BY id DESC"
     result = cursor.execute(article_query)
 
     if result > 0:
