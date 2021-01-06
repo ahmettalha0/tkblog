@@ -43,7 +43,7 @@ class ArticleForm(Form):
 
 class PageForm(Form):
     title = StringField("Title", validators=[validators.Length(min=5, max=255), validators.DataRequired()])
-    content = TextAreaField("Content", validators=[validators.Length(min=100), validators.DataRequired()])
+    content = TextAreaField("Content", validators=[validators.Length(min=50), validators.DataRequired()])
 
 # routes
 @app.route("/")
@@ -127,14 +127,14 @@ def page_add():
         mysql.connection.commit()
         cursor.close()
         flash(message="The page has been successfully added.", category="success")
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("dashboard_pages"))
     return render_template("add-page.html", form = form)
 
 @app.route('/delete/page/<string:id>')
 @login_required
 def page_delete(id):
     cursor = mysql.connection.cursor()
-    page_query = "Select * From page Where id = %s"
+    page_query = "Select * From pages Where id = %s"
     result = cursor.execute(page_query,(id,))
     if result > 0:
         delete_query = "Delete From pages where id = %s"
@@ -144,7 +144,7 @@ def page_delete(id):
         return redirect(url_for("dashboard"))
     else:
         flash(message="There is no such page or you do not have permission to delete it.", category="danger")
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("dashboard_pages"))
 
 @app.route('/edit/page/<string:id>', methods=["GET","POST"])
 @login_required
@@ -161,7 +161,7 @@ def page_update(id):
             return render_template("update-page.html", form = form)
         else:
             flash(message="There is no such page or you do not have permission to delete it.", category="danger")
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("dashboard_pages"))
     else:
         form = PageForm(request.form)
         if form.validate():
@@ -173,10 +173,10 @@ def page_update(id):
             cursor.execute(update_query, (updated_title, updated_content, updated_slug, id))
             mysql.connection.commit()
             flash(message="The page was successfuly updated", category="success")
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("dashboard_pages"))
         else:
             flash(message="Something went wrong.", category="danger")
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("dashboard_pages"))
 
 # Global pages
 @app.context_processor
@@ -363,7 +363,7 @@ def search():
         result = cursor.execute(search_query)
         if result > 0:
             articles = cursor.fetchall()
-            flash(message= "Showing results for " + search_key, category="success")
+            flash(message= "Showing results for \"" + search_key + "\"", category="success")
             return render_template("articles.html", articles = articles)
         else:
             flash(message="There is no article related to the content you are looking for.", category="secondary")

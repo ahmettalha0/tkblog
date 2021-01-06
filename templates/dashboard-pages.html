@@ -7,7 +7,6 @@
             <div class="col-lg-6 col-md-12 col-sm-12 text-xl-right text-md-right  text-sm-left  p-2 bd-highlight">Hello, <strong>{{session.username}}</strong></div>
         </div>
         <hr>
-        <a href="/add-article"><button type="button" class="btn btn-outline-warning">Add Article</button></a>
         <a href="/add-page"><button type="button" class="btn btn-outline-success">Add Page</button></a>
         <a href="#" class="btn btn-outline-secondary disabled" tabindex="-1" role="button" aria-disabled="true">Link</a>
         <hr>
@@ -25,7 +24,7 @@
                 {% for page in pages %}
                     <tr>
                     <th scope="row">{{page.id}}</th>
-                        <td><a href="/article/{{page.slug}}-{{page.id}}" class="text-decoration-none" style="color: black;">{{page.title}}</a></td>
+                        <td><a href="/page/{{page.slug}}-{{page.id}}" class="text-decoration-none" style="color: black;">{{page.title}}</a></td>
                         <td><a class="btn btn-warning" href="/edit/page/{{page.id}}" role="button"><i class="fas fa-pen-square"></i></a></td>
                         <td><a class="btn btn-danger" href="/delete/page/{{page.id}}" role="button"><i class="far fa-trash-alt"></i></a></td>
                     </tr>
