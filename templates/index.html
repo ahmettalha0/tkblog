@@ -17,13 +17,13 @@
         <div class="card mb-3">
         <div class="row no-gutters">
           <div class="col-md-2 col-sm-12">
-          <a href="/article/{{article.slug}}">
+          <a href="/article/{{article.id}}-{{article.slug}}">
             <img src="{{article.post_thumbnail}}" class="img-responsive p-3" width="200 " height="200" ></a>
           </div>
           <div class="col-md-10 col-sm-12 pr-3">
             <div class="card-body">
-              <h5 class="card-title"><a href="/article/{{article.slug}}" class="text-decoration-none" style="color: black;">{{article.title}}</a></h5>
-              <p class="card-text"><a href="/article/{{article.slug}}" class="text-decoration-none" style="color: black;">{{article.content[:300] | striptags}}</a></p>
+              <h5 class="card-title"><a href="/article/{{article.id}}-{{article.slug}}" class="text-decoration-none" style="color: black;">{{article.title}}</a></h5>
+              <p class="card-text"><a href="/article/{{article.id}}-{{article.slug}}" class="text-decoration-none" style="color: black;">{{article.content[:300] | striptags}}</a></p>
               <p class="card-text"><small class="text-muted"><i class="icon-clock"></i> {{article.created_date.strftime('%d-%m-%Y')}}</small></p>
             </div>
           </div>

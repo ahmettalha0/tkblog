@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask import Flask, render_template, flash, redirect, url_for, session, request
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, PasswordField, validators, TextAreaField
 from passlib.handlers.sha2_crypt import sha256_crypt
@@ -103,8 +103,9 @@ def add_article():
         title = form.title.data
         content = form.content.data
         thumbnail = form.thumbnail.data
-        now = datetime.now()
-        slug = slugify(form.title.data + "-" + str(now.day) + str(now.month) + str(now.microsecond))
+        # now = datetime.now()
+        # slug = slugify(form.title.data + "-" + str(now.day) + str(now.month) + str(now.microsecond))
+        slug = slugify(form.title.data)
         cursor = mysql.connection.cursor()
         add_query = "Insert into articles(title,author,content,post_thumbnail,slug) VALUES(%s,%s,%s,%s, %s)"
         cursor.execute(add_query,(title,session["username"], content, thumbnail, slug))
@@ -113,12 +114,14 @@ def add_article():
         flash(message="The article has been successfully added.", category="success")
         return redirect(url_for("dashboard"))
     return render_template("add-article.html", form = form)
-     
-@app.route('/article/<slug>')
-def article_detail(slug):
+
+
+
+@app.route('/article/<int:id>-<slug>')
+def article_detail(slug, id):
     cursor = mysql.connection.cursor()
-    article_query = "Select * From articles where slug = %s"
-    result = cursor.execute(article_query,(slug,))
+    article_query = "Select * From articles where slug = %s and id = %s"
+    result = cursor.execute(article_query,(slug, id))
     if result > 0:
         article = cursor.fetchone()
         return render_template("article.html", article = article)
@@ -163,10 +166,11 @@ def article_update(id):
         if form.validate():
             updated_title = form.title.data
             updated_content = form.content.data
-            updated_thumbnail = form.thumbnail.data            
-            update_query = "Update articles Set title = %s, content = %s, post_thumbnail = %s where id = %s"
+            updated_thumbnail = form.thumbnail.data
+            updated_slug = slugify(form.title.data)        
+            update_query = "Update articles Set title = %s, content = %s, post_thumbnail = %s, slug = %s where id = %s"
             cursor = mysql.connection.cursor()
-            cursor.execute(update_query, (updated_title, updated_content, updated_thumbnail, id))
+            cursor.execute(update_query, (updated_title, updated_content, updated_thumbnail, updated_slug, id))
             mysql.connection.commit()
             flash(message="The article successfuly updated", category="success")
             return redirect(url_for("dashboard"))
