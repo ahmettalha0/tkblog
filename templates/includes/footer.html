@@ -35,19 +35,16 @@
             </div>
           </div>
           <div class="col-md-4">
-            <div class="latest-posts"><a href="#">
+            <div class="latest-posts">
+            {% for article in article_everywhere %}
+              <a href="/{{article.id}}-{{article.slug}}">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="/static/img/small-thumbnail-1.jpg" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Hotels for all budgets</strong><span class="date last-meta">October 26, 2016</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="/static/img/small-thumbnail-2.jpg" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Great street atrs in London</strong><span class="date last-meta">October 26, 2016</span></div>
-                </div></a><a href="#">
-                <div class="post d-flex align-items-center">
-                  <div class="image"><img src="/static/img/small-thumbnail-3.jpg" alt="..." class="img-fluid"></div>
-                  <div class="title"><strong>Best coffee shops in Sydney</strong><span class="date last-meta">October 26, 2016</span></div>
-                </div></a></div>
+                  <div class="image"><img src="{{article.post_thumbnail}}" alt="..." class="img-fluid"></div>
+                  <div class="title"><strong>{{article.title}}</strong><span class="date last-meta">{{article.created_date.strftime('%d-%m-%Y')}}</span></div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
           </div>
         </div>
       </div>

@@ -8,31 +8,29 @@
         </div>
         <hr>
         <a href="/add-article"><button type="button" class="btn btn-outline-warning">Add Article</button></a>
+        <a href="/add-page"><button type="button" class="btn btn-outline-success">Add Page</button></a>
         <a href="#" class="btn btn-outline-secondary disabled" tabindex="-1" role="button" aria-disabled="true">Link</a>
         <hr>
-        {% if articles %}
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                    <th scope="col" style="width: 6%">#</th>
-                    <th scope="col" style="width: 78%">Title</th>
-                    <th scope="col" style="width: 8%">Edit</th>
-                    <th scope="col" style="width: 8%">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for article in articles %}
-                    <tr>
-                    <th scope="row">{{article.id}}</th>
-                        <td><a href="/article/{{article.id}}-{{article.slug}}" class="text-decoration-none" style="color: black;">{{article.title}}</a></td>
-                        <td><a class="btn btn-warning" href="/edit/{{article.id}}" role="button"><i class="fas fa-pen-square"></i></a></td>
-                        <td><a class="btn btn-danger" href="/delete/{{article.id}}" role="button"><i class="far fa-trash-alt"></i></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class = "aler alert-danger">You don't have an article written yet. How would you like to start writing right away?</div>
-        {% endif %}
+        <div class="row">
+        
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><a href="/dashboard/articles" class="stretched-link text-decoration-none font-weight-bold text-white">Articles</a></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Manage Your Articles</h5>
+                            <p class="card-text">You can add a new article or edit an existing article.</p>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><a href="/dashboard/pages" class="stretched-link text-decoration-none font-weight-bold text-white">Pages</a></div>
+                        <div class="card-body">
+                            <h5 class="card-title">Manage pages</h5>
+                            <p class="card-text">You can add a new page or edit an existing page.</p>
+                        </div>
+                    </div>
+            </div>
+        </div>
     </div>
 {% endblock body %}

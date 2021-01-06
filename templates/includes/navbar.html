@@ -27,15 +27,34 @@
               <li class="nav-item ">{% include "includes/searchbar.html" %}</li>
             </ul>
             <ul class="navbar-nav ml-auto">
+              
+              {% if pages_navbar|length>=3 %}
+              <div class="dropdown show">
+                  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pages
+                  </a>
 
-              <li class="nav-item"><a href="/about" class="nav-link">About</a>
-              </li>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    {% for page in pages_navbar %}
+                    <a class="dropdown-item" href="/page/{{page.slug}}-{{page.id}}">{{page.title}}</a>
+                    {% endfor %}
+                  </div>
+              </div>
               <li class="nav-item"><a href="/articles" class="nav-link">Posts</a>
               </li>
+              {% else %}
+              {% for page in pages_navbar %}
+              <li class="nav-item"><a href="/page/{{page.slug}}-{{page.id}}" class="nav-link">{{page.title}}</a>
+              </li>
+              {% endfor %}
+              <li class="nav-item"><a href="/articles" class="nav-link">Posts</a>
+              </li>
+              {% endif %}
+              
             </ul>
             {% if session["logged_in"] %}
             <div class = "ml-1"><a href="/add-article"><button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Add a new article"><i class="fas fa-plus"></i></button></a></div>
-            <div class = "ml-1"><a href="/dashboard"><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="My Articles"><i class="far fa-newspaper"></i></button></a></div>
+            <div class = "ml-1"><a href="/dashboard/articles"><button type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="bottom" title="My Articles"><i class="far fa-newspaper"></i></button></a></div>
             <div class = "ml-1"><a href="/dashboard"><button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="bottom" title="Manage settings"><i class="fas fa-cog"></i></button></a></div>
             <div class = "ml-1"><a href="/logout"><button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Log out"><i class="fas fa-sign-out-alt"></i></button></a></div>
             {% else %}

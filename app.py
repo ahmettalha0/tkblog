@@ -20,7 +20,7 @@ app.config["MYSQL_PASSWORD"] = ""
 app.config["MYSQL_DB"] = "tkblog"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
-# user register, login, article add form
+# user register, login, article add form, page form
 class RegisterForm(Form):
     name = StringField("Name and Surname", validators=[validators.Length(min= 3, max= 25), validators.DataRequired()])
     username = StringField("Username", validators=[validators.Length(min= 3, max= 35), validators.DataRequired()])
@@ -41,6 +41,10 @@ class ArticleForm(Form):
     content = TextAreaField("Content", validators=[validators.Length(min=100), validators.DataRequired()])
     thumbnail = StringField("Thumbnail", default="/static/img/default.png")
 
+class PageForm(Form):
+    title = StringField("Title", validators=[validators.Length(min=5, max=255), validators.DataRequired()])
+    content = TextAreaField("Content", validators=[validators.Length(min=100), validators.DataRequired()])
+
 # routes
 @app.route("/")
 def index():
@@ -53,10 +57,6 @@ def index():
     else:
         return render_template("index.html")
 
-@app.route('/about')
-def about():
-    return render_template("about.html")
-
 # login control decorator
 def login_required(f):
     @wraps(f)
@@ -68,18 +68,127 @@ def login_required(f):
             return redirect(url_for("login"))
     return decorated_function
 
+# dashboard
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    return render_template("dashboard.html")
+
+@app.route('/dashboard/articles')
+@login_required
+def dashboard_articles():
     cursor = mysql.connection.cursor()
     article_query = "Select * From articles where author = %s ORDER BY id DESC"
     result = cursor.execute(article_query,(session["username"],))
     if result > 0:
         articles = cursor.fetchall()
-        return render_template("dashboard.html", articles = articles)
+        return render_template("dashboard-articles.html", articles = articles)
     else:
         return render_template("dashboard.html")
-    
+
+@app.route('/dashboard/pages')
+@login_required
+def dashboard_pages():
+    cursor = mysql.connection.cursor()
+    article_query = "Select * From pages ORDER BY id DESC"
+    result = cursor.execute(article_query)
+    if result > 0:
+        pages = cursor.fetchall()
+        return render_template("dashboard-pages.html", pages = pages)
+    else:
+        return render_template("dashboard.html")
+
+
+# pages
+
+@app.route('/page/<slug>-<int:id>')
+def page_detail(slug, id):
+    cursor = mysql.connection.cursor()
+    page_query = "Select * From pages where slug = %s and id = %s"
+    result = cursor.execute(page_query,(slug, id))
+    if result > 0:
+        page = cursor.fetchone()
+        return render_template("page.html", page = page)
+    else:
+        return render_template("page-error.html")
+
+@app.route('/add-page', methods = ["GET", "POST"])
+@login_required
+def page_add():
+    form = PageForm(request.form)
+    if request.method == "POST" and form.validate():
+        title = form.title.data
+        content = form.content.data
+        slug = slugify(form.title.data)
+        cursor = mysql.connection.cursor()
+        add_query = "Insert into pages(title,content,slug) VALUES(%s,%s,%s)"
+        cursor.execute(add_query,(title, content, slug))
+        mysql.connection.commit()
+        cursor.close()
+        flash(message="The page has been successfully added.", category="success")
+        return redirect(url_for("dashboard"))
+    return render_template("add-page.html", form = form)
+
+@app.route('/delete/page/<string:id>')
+@login_required
+def page_delete(id):
+    cursor = mysql.connection.cursor()
+    page_query = "Select * From page Where id = %s"
+    result = cursor.execute(page_query,(id,))
+    if result > 0:
+        delete_query = "Delete From pages where id = %s"
+        cursor.execute(delete_query,(id,))
+        mysql.connection.commit()
+        flash(message="The page was successfully deleted", category="success")
+        return redirect(url_for("dashboard"))
+    else:
+        flash(message="There is no such page or you do not have permission to delete it.", category="danger")
+        return redirect(url_for("dashboard"))
+
+@app.route('/edit/page/<string:id>', methods=["GET","POST"])
+@login_required
+def page_update(id):
+    if request.method == "GET":
+        cursor = mysql.connection.cursor()
+        article_query = "Select * From pages where id = %s"
+        result = cursor.execute(article_query, (id,))
+        if result > 0:
+            page = cursor.fetchone()
+            form = PageForm()
+            form.title.data = page["title"]
+            form.content.data = page["content"]
+            return render_template("update-page.html", form = form)
+        else:
+            flash(message="There is no such page or you do not have permission to delete it.", category="danger")
+            return redirect(url_for("dashboard"))
+    else:
+        form = PageForm(request.form)
+        if form.validate():
+            updated_title = form.title.data
+            updated_content = form.content.data
+            updated_slug = slugify(form.title.data)        
+            update_query = "Update pages Set title = %s, content = %s, slug = %s where id = %s"
+            cursor = mysql.connection.cursor()
+            cursor.execute(update_query, (updated_title, updated_content, updated_slug, id))
+            mysql.connection.commit()
+            flash(message="The page was successfuly updated", category="success")
+            return redirect(url_for("dashboard"))
+        else:
+            flash(message="Something went wrong.", category="danger")
+            return redirect(url_for("dashboard"))
+
+# Global pages
+@app.context_processor
+def get_pages():
+    cursor = mysql.connection.cursor()
+    page_query = "Select * From pages"
+    result = cursor.execute(page_query)
+    if result > 0:
+        pages_navbar = cursor.fetchall()
+        return dict(pages_navbar = pages_navbar)
+
+
 # articles
 
 @app.route('/articles')
@@ -128,7 +237,7 @@ def article_detail(slug, id):
     else:
         return render_template("article-error.html")
 
-@app.route('/delete/<string:id>')
+@app.route('/delete/article/<string:id>')
 @login_required
 def article_delete(id):
     cursor = mysql.connection.cursor()
@@ -144,7 +253,7 @@ def article_delete(id):
         flash(message="There is no such article or you do not have permission to delete it.", category="danger")
         return redirect(url_for("dashboard"))
 
-@app.route('/edit/<string:id>', methods=["GET","POST"])
+@app.route('/edit/article/<string:id>', methods=["GET","POST"])
 @login_required
 def article_update(id):
     if request.method == "GET":
@@ -178,7 +287,16 @@ def article_update(id):
             flash(message="Something went wrong.", category="danger")
             return redirect(url_for("dashboard"))
 
-    
+# Global articles
+@app.context_processor
+def get_articles():
+    cursor = mysql.connection.cursor()
+    article_query = "Select * From articles ORDER BY id DESC LIMIT 3"
+    result = cursor.execute(article_query)
+    if result > 0:
+        article_everywhere = cursor.fetchall()
+        return dict(article_everywhere = article_everywhere)
+
 
 # login register logout
 
